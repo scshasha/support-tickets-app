@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default mt-5">
-                    <div class="panel-heading muted">Support tickets</div>
+                    <div class="panel-heading muted"><strong>Support tickets</strong></div>
                     <div class="panel-body">
                        @if ($tickets->isEmpty())
                             <p>There are currently no tickets.</p>

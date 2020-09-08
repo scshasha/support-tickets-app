@@ -14,9 +14,14 @@ use Illuminate\Support\Facades\Mail;
 class TicketsController extends Controller
 {
 
-    public function __contruct()
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $this->middleware('Auth');
+        $this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -26,7 +31,7 @@ class TicketsController extends Controller
     public function index()
     {
         // 
-        $tickets = Ticket::paginate(10);
+        $tickets = Ticket::paginate(2);
         $categories = Category::all();
 
         return view('tickets.index', compact('tickets', 'categories'));
@@ -54,28 +59,27 @@ class TicketsController extends Controller
     // public function store(Request $request, AppMailer $mailer) // No longer using AppMailer::class
     public function store(Request $request)
     {
-        //
-        $this->validate(
-            $request,
-            array(
-                'title'     => 'required',
-                'category'  =>  'required',
-                'message'   =>  'required',
-                'priority'  =>  'required',
-            )
-        );
+        $input = [];
+        $this->validate($request, [
+            'title'     => 'required',
+            'category'  =>  'required',
+            'message'   =>  'required',
+            'priority'  =>  'required',
+        ]);
 
-        $ticket = new Ticket(
-            array(
-                'title'         =>  $request->input('title'),
-                'user_id'       =>  Auth::user()->id,
-                'ticket_id'     =>  strtoupper(str_random(10)),
-                'category_id'   =>  $request->input('category'),
-                'priority'      =>  $request->input('priority'),
-                'message'       =>  $request->input('message'),
-                'status'        =>  "Open",
-            )
-        );
+        $input = [
+            'title'         =>  $request->input('title'),
+            'user_id'       =>  Auth::user()->id,
+            'ticket_id'     =>  strtoupper(str_random(10)),
+            'category_id'   =>  $request->input('category'),
+            'priority'      =>  $request->input('priority'),
+            'message'       =>  $request->input('message'),
+            'status'        =>  "Open",
+        ];
+
+        // dd($input);
+
+        $ticket = new Ticket($input);
 
         $ticket->save();
 

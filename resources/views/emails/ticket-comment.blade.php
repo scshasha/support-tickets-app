@@ -1,7 +1,7 @@
 @component('mail::message')
 
 <p>
-    {{ $ticketComment }}
+    {!! $ticketComment !!}
 </p>
 
 --- <br>
