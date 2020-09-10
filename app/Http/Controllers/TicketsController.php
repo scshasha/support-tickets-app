@@ -14,34 +14,31 @@ use Illuminate\Support\Facades\Mail;
 class TicketsController extends Controller
 {
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        // 
-        $tickets = Ticket::paginate(2);
+        $user = Auth::user();
+
+        if ($user->is_admin === 1) {
+            // load all tickets in admin view.
+            // return view('admin.tickets');
+        } elseif($user->is_admin === 2) {
+            // load tickets assigned to agent
+            // return view('agent.tickets');
+        }
+
+        $tickets = Ticket::paginate(5);
         $categories = Category::all();
 
         return view('tickets.index', compact('tickets', 'categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         return view('tickets.create', [
@@ -49,57 +46,53 @@ class TicketsController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Mailers\AppMailer    $mailer
-     * @return \Illuminate\Http\Response
-     */
+
+    
     // public function store(Request $request, AppMailer $mailer) // No longer using AppMailer::class
     public function store(Request $request)
     {
-        $input = [];
+        $to = $input = [];
+
+        // Get Administrator E-mails to Notify
+        $a = \App\User::all()->where('is_admin', 1);
+
+        foreach($a as $b) {
+            $to[] = $b->email;
+        }
+        
+        // Validate Input
         $this->validate($request, [
             'title'     => 'required',
-            'category'  =>  'required',
-            'message'   =>  'required',
-            'priority'  =>  'required',
+            'author_name'  =>  'required',
+            'author_email'   =>  'required|email',
+            'message'  =>  'required',
         ]);
-
+        
         $input = [
             'title'         =>  $request->input('title'),
-            'user_id'       =>  Auth::user()->id,
-            'ticket_id'     =>  strtoupper(str_random(10)),
-            'category_id'   =>  $request->input('category'),
-            'priority'      =>  $request->input('priority'),
+            'ticket_id'     =>  strtoupper(str_random(15)),
             'message'       =>  $request->input('message'),
+            'author_name'   =>  $request->input('author_name'),
+            'author_email'  =>  $request->input('author_email'),
+            'category_id'   =>  Category::where('name', 'Uncategorized')->firstOrFail()->id,
+            'priority'      =>  'low',
             'status'        =>  "Open",
         ];
-
-        // dd($input);
+        // Ticket::create($input);
 
         $ticket = new Ticket($input);
-
         $ticket->save();
 
-        // $mailer->sendTicketInformation(Auth::user(), $ticket);
+        // Notify Admin of the new ticket
+        // Mail::to(implode(';', $to))->send(new TicketCreatedMail(Auth::user(), $ticket));
 
-        Mail::to(
-            Auth::user()->email
-        )->send(new TicketCreatedMail(Auth::user(), $ticket));
+        // Return reply response
+        $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s">here</a>.', env('APP_URL'), $ticket->ticket_id);
 
-        return redirect()->back()->with(
-            "status", "A ticket with ID: #$ticket->ticket_id has been opened."
-        );
+        return redirect()->back()->with("status", $responseMessage);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
+
     // public function show(Ticket $ticket, $ticket_id)
     public function show($ticket_id)
     {
@@ -137,38 +130,20 @@ class TicketsController extends Controller
     }
 
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Ticket $ticket)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Ticket $ticket)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Ticket  $ticket
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Ticket $ticket)
     {
         //
     }
+
+
 }
