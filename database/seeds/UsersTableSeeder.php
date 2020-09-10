@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\Role;
 use App\User;
+use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
 {
@@ -13,28 +12,29 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+
+        $faker = Faker\Factory::create();
+        // Truncate table
         User::truncate();
 
+
+        // Create Admin User
         User::create([
-            'name' => 'tony',
-            'email' => 'admin@myapp.com',
+            'name' => $faker->firstName,
+            'email' => 'admin@supporttickets.com',
             'is_admin' => 1,
             'password' => 'password',
         ]);
-        User::create([
-            'name' => 'jacky',
-            'email' => 'user2@app.com',
-            'is_admin' => 0,
-            'password' => 'password',
-        ]);
-        User::create([
-            'name' => 'lorraine',
-            'email' => 'user1@app.com',
-            'is_admin' => 0,
-            'password' => 'password',
-        ]);
 
-        // @TODO: Integrate with facker and e-mail functionality
+        
+        // Create 5 Agent Users
+        for($i=1;$i <= 5;$i++) {
+            User::create([
+                'name' => $faker->firstName,
+                'email' => sprintf('agent%d@supporttickets.com', $i),
+                'is_admin' => 2,
+                'password' => 'password',
+            ]);
+        }
     }
 }

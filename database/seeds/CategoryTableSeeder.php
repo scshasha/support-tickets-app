@@ -19,7 +19,7 @@ class CategoryTableSeeder extends Seeder
         Category::create(array('name'=>'Technical'));
         Category::create(array('name'=>'Shipping'));
         Category::create(array('name'=>'Machanical'));
-        Category::create(array('name'=>'Other'));
+        Category::create(array('name'=>'Uncategorized'));
         
     }
 }

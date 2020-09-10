@@ -15,12 +15,13 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->integer('category_id')->unsigned();
-            $table->integer('assignee_id')->nullable();
+            $table->integer('user_id')->nullable(); // Agent to be assigned the ticket.
+            $table->integer('category_id')->nallable();
             $table->string('ticket_id')->unique();
+            $table->string('author_name');
+            $table->string('author_email');
             $table->string('title');
-            $table->string('priority');
+            $table->string('priority')->nallable();
             $table->longText('message');
             $table->string('status');
             $table->timestamps();
