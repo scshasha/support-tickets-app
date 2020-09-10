@@ -1,20 +1,39 @@
 @extends('layouts.app')
 
-@section('title', 'New Ticket')
+@section('title', 'Add Ticket')
 
 @section('content')
     <div class="container">
         <div class="row">
         <!-- col-md-6 m-auto -->
-            <div class="col-md-10 col-md-offset-1">
+            <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default mt-5">
-                    <div class="panel-heading muted"><strong>Open a new support ticket</strong></div>
+                    <div class="panel-heading muted"><strong>Add ticket</strong></div>
                     <div class="panel-body">
                         @if (session('status'))
                             @include('includes.alert.alert-success')
                         @endif
                         <form action="{{ url('/ticket/create') }}" method="post" role="form">
                             {!! csrf_field() !!}
+
+
+                            <div class="form-group{{ $errors->has('author_name') ?  ' has-error':'' }}">
+                                    <input type="text" id="author_name" name="author_name" value="{{ old('author_name') }}" class="form-control" placeholder="Your Name" required />
+                                    @if ($errors->has('author_name'))
+                                        <span class="help-block text-danger bg-danger">
+                                            <strong>{{ $errors->first('author_name') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>
+
+                            <div class="form-group{{ $errors->has('author_email') ?  ' has-error':'' }}">
+                                    <input type="email" id="author_email" name="author_email" value="{{ old('author_email') }}" class="form-control" placeholder="Your E-mail" required />
+                                    @if ($errors->has('author_email'))
+                                        <span class="help-block text-danger bg-danger">
+                                            <strong>{{ $errors->first('author_email') }}</strong>
+                                        </span>
+                                    @endif
+                            </div>
 
                             <div class="form-group{{ $errors->has('title') ?  ' has-error':'' }}">
                                     <input type="text" id="title" name="title" value="{{ old('title') }}" class="form-control" placeholder="Title" required />
@@ -25,36 +44,10 @@
                                     @endif
                             </div>
 
-                            <div class="form-group col col-xs-12 col-sm-12 col-md-6 col-lg-6 p-0{{ $errors->has('category') ?  ' has-error':'' }}">
-                                    <select name="category" id="category" class="form-control" required>
-                                        <option value="">Select Category</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('category'))
-                                        <span class="help-block text-danger bg-danger">
-                                            <strong>{{ $errors->first('category') }}</strong>
-                                        </span>
-                                    @endif
-                            </div>
 
-                            <div class="form-group col col-xs-12 col-sm-12 col-md-6 col-lg-6 p-0{{ $errors->has('priority') ?  ' has-error':'' }}">
-                                    <select name="priority" id="priority" class="form-control" required>
-                                        <option value="">Select Priority</option>
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                    </select>
-                                    @if ($errors->has('priority'))
-                                        <span class="help-block text-danger bg-danger">
-                                            <strong>{{ $errors->first('priority') }}</strong>
-                                        </span>
-                                    @endif
-                            </div>
 
                             <div class="form-group{{ $errors->has('message') ?  ' has-error':'' }}">
-                                    <textarea name="message" id="message" rows="5" class="form-control" placeholder="Message"></textarea>
+                                    <textarea name="message" id="message" rows="10" class="form-control" placeholder="Content"></textarea>
                                     @if ($errors->has('message'))
                                         <span class="help-block text-danger bg-danger">
                                             <strong>{{ $errors->first('message') }}</strong>

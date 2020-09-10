@@ -38,4 +38,4 @@
 
     </head>
     <body>
-        <div class="hidded" id="spinner"></div>
+        <!-- <div class="hidded" id="spinner"></div> -->
