@@ -23,7 +23,7 @@ class TicketsController extends Controller
     public function index()
     {
         
-        $tickets = Ticket::paginate(5);
+        $tickets = Ticket::paginate(10);
         $categories = Category::all();
         
         if (Auth::user()) {
@@ -212,7 +212,7 @@ class TicketsController extends Controller
             if (Auth::user()->is_admin && Auth::user()->is_admin === 1) {
                 // Remove the ticket.
                 Ticket::where('ticket_id', $ticket_id)->delete();
-                return redirect()->back()->with('status', sprintf('Ticket <strong>#%s</strong> has been sucessfully removed.', $ticket_id));
+                return redirect('/admin/tickets')->with('status', sprintf('Ticket <strong>#%s</strong> has been sucessfully removed.', $ticket_id));
             }
         }
         return redirect()->back()-with('errors', 'Action not allowed.');
