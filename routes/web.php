@@ -9,6 +9,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/admin', 'HomeController@administrator')->name('administrator');
+
 Auth::routes();
 
 
@@ -33,4 +35,6 @@ Route::group(['middleware' => 'auth'], function() {
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
     Route::get('tickets', 'TicketsController@index')->name('tickets');
     Route::post('tickets/close/{ticket_id}', 'TicketsController@close')->name('close');
+    Route::get('tickets/edit/{ticket_id}', 'TicketsController@edit')->name('edit');
+    Route::post('tickets/update', 'TicketsController@update')->name('update');
 });
