@@ -61,9 +61,11 @@
                         </form>
                     </td>
                     <td>
-                        <a href="{{ url('admin/tickets/remove/'.$ticket->ticket_id) }}" class="btn btn-xs btn-danger btn-icon icon-lg fa fa-trash add-tooltip"  data-placement="auto" data-toggle="tooltip" data-original-title="Delete Ticket">
-                        
-                        </a>
+                        <form action="{{ url('admin/tickets/remove/'.$ticket->ticket_id) }}" method="POST">
+                            {!! csrf_field() !!}
+                            <button class="btn btn-xs btn-danger btn-icon icon-lg fa fa-trash add-tooltip"  data-placement="auto" data-toggle="tooltip" data-original-title="Delete Ticket" type="submit">
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach

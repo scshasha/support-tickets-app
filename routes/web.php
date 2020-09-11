@@ -37,4 +37,5 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
     Route::post('tickets/close/{ticket_id}', 'TicketsController@close')->name('close');
     Route::get('tickets/edit/{ticket_id}', 'TicketsController@edit')->name('edit');
     Route::post('tickets/update', 'TicketsController@update')->name('update');
+    Route::post('tickets/remove/{ticket_id}', 'TicketsController@destroy')->name('destroy');
 });

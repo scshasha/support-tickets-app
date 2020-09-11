@@ -5,10 +5,22 @@
 @section('content')
 
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-    <h1 class="h2 mt-0">{{ $ticket->title }}</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
+        <h1 class="h2 mt-0">{{ $ticket->title }}</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group">
+                <form action="{{ url('admin/tickets/close/'.$ticket->ticket_id) }}" method="POST">
+                    {!! csrf_field() !!}
+                    <button class="btn btn-lg btn-outline-success btn-icon icon-lg fa fa-check add-tooltip ml-2" data-placement="top" data-toggle="tooltip" data-original-title="Resolve Ticket" type="submit">
+                    </button>
+                </form>
+                <form action="{{ url('admin/tickets/remove/'.$ticket->ticket_id) }}" method="POST">
+                    {!! csrf_field() !!}
+                    <button class="btn btn-lg btn-outline-danger btn-icon icon-lg fa fa-trash add-tooltip ml-2" data-placement="top" data-toggle="tooltip" data-original-title="Delete Ticket" type="submit">
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
 
 @if (session('status'))
     @include('includes.alert.alert-success')

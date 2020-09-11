@@ -8,6 +8,18 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2 mt-0">{{ $ticket->title }}</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group">
+                <form action="{{ url('admin/tickets/close/'.$ticket->ticket_id) }}" method="POST">
+                    {!! csrf_field() !!}
+                    <button class="btn btn-lg btn-outline-success btn-icon icon-lg fa fa-check add-tooltip ml-2" data-placement="top" data-toggle="tooltip" data-original-title="Resolve Ticket" type="submit">
+                    </button>
+                </form>
+                <form action="{{ url('admin/tickets/remove/'.$ticket->ticket_id) }}" method="POST">
+                    {!! csrf_field() !!}
+                    <button class="btn btn-lg btn-outline-danger btn-icon icon-lg fa fa-trash add-tooltip ml-2" data-placement="top" data-toggle="tooltip" data-original-title="Delete Ticket" type="submit">
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -19,6 +31,14 @@
         <div class="row">
             <!-- <div class="col-md-12"> -->
                 <div class="panel panel-default w-100 ml-3 mr-3">
+                    <div class="panel-head">
+                        <!-- <div class="col-md-6">
+                        <h3>{{ $ticket->title }}</h3>
+                        </div>
+                        <div class="panel-control col-md-6">
+                            
+                        </div> -->
+                    </div>
                     <div class="panel-body">
                         <div class="ticket-data">
                             <table class="table table-stripped table-striped">
