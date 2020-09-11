@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Ticket;
 use App\Category;
-// use App\Mailers\AppMailer;
 use App\Mail\TicketStatusMail;
 use App\Mail\TicketCreatedMail;
 use Illuminate\Http\Request;
@@ -17,23 +17,23 @@ class TicketsController extends Controller
 
     public function __construct()
     {
-        // $this->middleware('auth');
+        // $this->middleware('auth'); Need to allow non-registered users to make and view thier tickets.
     }
 
     public function index()
     {
-        $user = Auth::user();
-
-        if ($user->is_admin === 1) {
-            // load all tickets in admin view.
-            // return view('admin.tickets');
-        } elseif($user->is_admin === 2) {
-            // load tickets assigned to agent
-            // return view('agent.tickets');
-        }
-
+        
         $tickets = Ticket::paginate(5);
         $categories = Category::all();
+        
+        if (Auth::user()) {
+            if (Auth::user()->is_admin === 1) {
+                return view('admin.tickets', compact('tickets', 'categories'));
+            } elseif(Auth::user()->is_admin === 2) {
+                // @TODO: Create agent view.
+                return view('agent.tickets');
+            }
+        }
 
         return view('tickets.index', compact('tickets', 'categories'));
     }
@@ -54,7 +54,7 @@ class TicketsController extends Controller
         $to = $input = [];
 
         // Get Administrator E-mails to Notify
-        $a = \App\User::all()->where('is_admin', 1);
+        $a = User::all()->where('is_admin', 1);
 
         foreach($a as $b) {
             $to[] = $b->email;
@@ -84,9 +84,9 @@ class TicketsController extends Controller
         $ticket->save();
 
         // Notify Admin of the new ticket
-        // Mail::to(implode(';', $to))->send(new TicketCreatedMail(Auth::user(), $ticket));
+        Mail::to(implode(';', $to))->send(new TicketCreatedMail(Auth::user(), $ticket));
 
-        // Return reply response
+        // Response message.
         $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s">here</a>.', env('APP_URL'), $ticket->ticket_id);
 
         return redirect()->back()->with("status", $responseMessage);
@@ -101,7 +101,12 @@ class TicketsController extends Controller
         $comments = $ticket->comments;
         $viewData = compact('ticket', 'category', 'comments');
 
-        // dd($comments);
+        if (Auth::user() && Auth::user()->is_admin === 1) {
+            return view('admin.ticket-details', $viewData);
+        } else if (Auth::user() && Auth::user_admin === 2) {
+            // Agent view.
+            redirect('/assigned/tickets'); // @TODO: Create view
+        }
 
         return view('tickets.single', $viewData);
     }
@@ -130,14 +135,61 @@ class TicketsController extends Controller
     }
 
 
-    public function edit(Ticket $ticket)
+    // public function edit(Ticket $ticket)
+    public function edit($ticket_id)
     {
-        //
+        /**
+         * To edit user ned to be logged in and HAS to be an administrator.
+         */
+        if (Auth::user() && Auth::user()->is_admin === 1) {
+            $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
+            $agents = User::all()->where('is_admin', 2);
+            $category = $ticket->category;
+    
+            return view('admin.ticket-edit', compact('ticket', 'category', 'agents')); // @TODO: Create View.
+        }
+
+        return redirect()->back()->with("error", "You are not authorized to perform this action.");
+        
     }
 
     public function update(Request $request, Ticket $ticket)
     {
-        //
+        if (Auh::user() && Auth::user()->is_admin) {
+            $this->validate($request, [
+                'title'     => 'required',
+                'message'  =>  'required',
+                'priority'  =>  'required',
+                'status'  =>  'required',
+                'category_id'  =>  'required',
+            ]);
+
+            $input = [
+                'title'         =>  $request->input('title'),
+                'message'       =>  $request->input('message'),
+                'category_id'   =>  $request->input('category_id'),
+                'priority'      =>  $request->input('priority'),
+                'status'        =>  $request->input('status'),
+                'user_id'        =>  !empty($request->input('user_id')) ? $request->input('user_id') : null,
+            ];
+
+            // Check if we should notify agent.
+            if (!empty($input['user_id'])) {
+                if ($ticket->user_id !== $input['user_id']) {
+                    // Send notification.
+                }
+            }
+
+            $ticket->title = $input['title'];
+            $ticket->message = $input['message'];
+            $ticket->category_id = $input['category_id'];
+            $ticket->priority = $input['priority'];
+            $ticket->status = $input['status'];
+            
+            $ticket->save();
+
+            return redirect()->back()->with('status', 'Ticket has been updated');
+        }
     }
 
     public function destroy(Ticket $ticket)
