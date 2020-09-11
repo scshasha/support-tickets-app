@@ -26,7 +26,9 @@ class TicketsController extends Controller
             if (Auth::user()->is_admin === 1) {
                 $tickets = Ticket::paginate(10);
                 $categories = Category::all();
-                return view('admin.tickets', compact('tickets', 'categories'));
+                $agents = User::all()->where('is_admin', 2);
+                
+                return view('admin.tickets', compact('tickets', 'categories', 'agents'));
             } elseif(Auth::user()->is_admin === 2) {
                 $tickets = Ticket::where('user_id', Auth::user()->id)->paginate(10);
                 $categories = Category::all();
