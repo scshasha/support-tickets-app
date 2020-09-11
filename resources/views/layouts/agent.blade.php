@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+
     <title>{{ env('APP_NAME') }} &bull; @yield('title')</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -13,11 +13,10 @@
 
     <!-- <script src="{{ asset('js/jquery-latest.min.js') }}"></script> -->
     <script src="{{ asset('js/jquery-2.1.1.min.js') }}"></script>
-    <script src="{{ asset('plugins/tinymce/tinymce.js') }}"></script>
     <style>
 
         html,body {
-            font-size: 85%;
+            font-size: 90%;
         }
         
         .bd-placeholder-img {
@@ -40,6 +39,26 @@
         .img-user {
             border-radius: 50% !important;
         }
+
+        table#ticket_list_tbl .fa {
+            color: #eeeeee !important;
+            transition: .5s ease-in-out;
+        }
+        table#ticket_list_tbl .fa:hover {
+            color: #eaeaea !important;
+        }
+
+        .alert-success {
+            background-color: #dceccb;
+        }
+
+        .alert button.close {
+            top: 23%;
+        }
+
+        strong {
+            font-weight: 700 !important;
+        }
     </style>
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 </head>
@@ -52,21 +71,14 @@
                 <div class="sidebar-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('admin') }}">
+                            <a class="nav-link" href="{{ url('dashboard') }}">
                             <span data-feather="home"></span>
                             <i class="fa fa-dashboard"></i>
                             Dashboard <span class="sr-only">(current)</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('categories') }}">
-                            <span data-feather="file"></span>
-                            <i class="fa fa-gear"></i>
-                            Categories
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('admin/tickets') }}">
+                            <a class="nav-link" href="{{ url('tickets') }}">
                             <span data-feather="file"></span>
                             <i class="fa fa-ticket"></i>
                             Tickets
@@ -80,51 +92,42 @@
                             </a>
                         </li>
                     </ul>
-
-                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                            <span>Manage</span>
-                    </h6>
-                    <ul class="nav flex-column mb-2">
-                        <div class="divider"></div>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="users"></span>
-                                <i class="fa fa-users fa-per"></i>
-                                Agents
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </nav>
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            @if (session('status'))
-                @include('includes.alert.alert-success')
-            @endif
             @yield('content')
             </main>
         </div>
     </div>
 
+    
 
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
- 
-
-     <!--jQuery [ REQUIRED ]-->
-     <script src="{{ asset('js/jquery-2.1.1.min.js') }}"></script>
-    <script src="{{ asset('js/dashboard.js') }}"></script>
-
-    <script>
-        $('.navbar-dark').addClass('sticky-top shadow');
-
-        $('a.nav-link').on('click', (e) => {
-            const navLinks = window.document.querySelectorAll('.nav-link');
-            console.log(navLinks);
-            navLinks.forEach((item) => {
-                item.classList.remove("active");
-            });
-            e.currentTarget.classList.add("active");
-        });
-    </script>
 </body>
+
+<script src="{{ asset('js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('plugins/tinymce/tinymce.js') }}"></script>
+<script src="{{ asset('js/dashboard.js') }}"></script>
+
+<script src="/plugins/popper/js/popper-1.16.0.min.js"></script>
+
+<script>
+
+
+    $('.navbar-dark').addClass('sticky-top shadow');
+
+    $('a.nav-link').on('click', (e) => {
+        const navLinks = window.document.querySelectorAll('.nav-link');
+        console.log(navLinks);
+        navLinks.forEach((item) => {
+            item.classList.remove("active");
+        });
+        e.currentTarget.classList.add("active");
+    });
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+</script>
+
 </html>
