@@ -11,18 +11,22 @@
     </div>
 </div>
 
+@if (session('status'))
+    @include('includes.alert.alert-success')
+@endif
+
 <div class="row">
 <div class="panel bg-light mr-3 ml-3 w-100">
     <div class="panel-body">
         @if (!$tickets->isEmpty())
-        <table class="table table-striped">
+        <table class="table table-striped" id="ticket_list_tbl">
             <thead>
                 <tr>
                     <th>Title</th>
                     <th>Category</th>
                     <th>Priority</th>
                     <th>Status</th>
-                    <th colspan="3"></th>
+                    <th colspan="4"></th>
                 </tr>
             </thead>
             <tbody>
@@ -31,20 +35,36 @@
                     <td><a href="{{ url('tickets/'.$ticket->ticket_id) }}">#{{ $ticket->ticket_id }} - {{ $ticket->title }}</a></td>
                     <td>
                         @foreach($categories as $category)
-                            @if ($category->id === $ticket->category_id) {{ $category->name }}@endif
+                            @if ($category->id === $ticket->category_id) {!! '<span class="label label-default">'.$category->name.'</span>' !!}@endif
                         @endforeach
                     </td>
                     <td>
-                        <select name="priority" id="priority">
-                            <option value="low" @if (strtolower($ticket->priority) === 'low') {{ 'selected="true"' }}@endif>Low</option>
-                            <option value="medium" @if (strtolower($ticket->priority) === 'medium') {{ 'selected="true"' }}@endif>Medium</option>
-                            <option value="high" @if (strtolower($ticket->priority) === 'high') {{ 'selected="true"' }}@endif>High</option>
-                        </select>
+                        <span class="label label-@if(strtolower($ticket->priority) === 'high'){{ 'danger' }}@elseif(strtolower($ticket->priority) === 'medium'){{ 'warning' }}@else{{ 'info' }}@endif">{{ ucfirst($ticket->priority) }}</span>
                     </td>
                     <td><span class="label @if (strtolower($ticket->status) === 'open') {{ 'label-success' }}@else{{ 'label-danger' }}@endif">{{ $ticket->status }}</span></td>
-                    <td>Comment</td>
-                    <td>Edit</td>
-                    <td>Close</td>
+                    <td>
+                        <a href="{{ url('tickets/'.$ticket->ticket_id) }}" class="btn btn-xs btn-mint btn-icon icon-lg fa fa-comment-o add-tooltip" data-placement="auto" data-toggle="tooltip" data-original-title="Leave a commment">
+                        
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url('admin/tickets/edit/'.$ticket->ticket_id) }}" class="btn btn-xs btn-warning btn-icon icon-lg fa fa-edit add-tooltip"  data-placement="auto" data-toggle="tooltip" data-original-title="Edit Ticket">
+                        
+                        </a>
+                    </td>
+                    <td>
+                        <form action="{{ url('admin/tickets/close/'.$ticket->ticket_id) }}" method="POST">
+                            {!! csrf_field() !!}
+                            <button class="btn btn-xs btn-success btn-icon icon-lg fa fa-check add-tooltip"  data-placement="auto" data-toggle="tooltip" data-original-title="Resolve Ticket" type="submit">
+                            
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <a href="{{ url('admin/tickets/remove/'.$ticket->ticket_id) }}" class="btn btn-xs btn-danger btn-icon icon-lg fa fa-trash add-tooltip"  data-placement="auto" data-toggle="tooltip" data-original-title="Delete Ticket">
+                        
+                        </a>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>

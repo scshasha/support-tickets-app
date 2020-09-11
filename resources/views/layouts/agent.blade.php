@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <title>{{ env('APP_NAME') }} &bull; @yield('title')</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -13,10 +13,11 @@
 
     <!-- <script src="{{ asset('js/jquery-latest.min.js') }}"></script> -->
     <script src="{{ asset('js/jquery-2.1.1.min.js') }}"></script>
+    <script src="{{ asset('plugins/tinymce/tinymce.js') }}"></script>
     <style>
 
         html,body {
-            font-size: 90%;
+            font-size: 85%;
         }
         
         .bd-placeholder-img {
@@ -38,22 +39,6 @@
         }
         .img-user {
             border-radius: 50% !important;
-        }
-
-        table#ticket_list_tbl .fa {
-            color: #eeeeee !important;
-            transition: .5s ease-in-out;
-        }
-        table#ticket_list_tbl .fa:hover {
-            color: #eaeaea !important;
-        }
-
-        .alert-success {
-            background-color: #dceccb;
-        }
-
-        .alert button.close {
-            top: 23%;
         }
     </style>
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
@@ -113,38 +98,33 @@
             </nav>
 
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            @if (session('status'))
+                @include('includes.alert.alert-success')
+            @endif
             @yield('content')
             </main>
         </div>
     </div>
 
-    
 
-</body>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+ 
 
-<script src="{{ asset('js/bootstrap.min.js') }}"></script>
-<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('plugins/tinymce/tinymce.js') }}"></script>
-<script src="{{ asset('js/dashboard.js') }}"></script>
+     <!--jQuery [ REQUIRED ]-->
+     <script src="{{ asset('js/jquery-2.1.1.min.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
 
-<script src="/plugins/popper/js/popper-1.16.0.min.js"></script>
+    <script>
+        $('.navbar-dark').addClass('sticky-top shadow');
 
-<script>
-
-
-    $('.navbar-dark').addClass('sticky-top shadow');
-
-    $('a.nav-link').on('click', (e) => {
-        const navLinks = window.document.querySelectorAll('.nav-link');
-        console.log(navLinks);
-        navLinks.forEach((item) => {
-            item.classList.remove("active");
+        $('a.nav-link').on('click', (e) => {
+            const navLinks = window.document.querySelectorAll('.nav-link');
+            console.log(navLinks);
+            navLinks.forEach((item) => {
+                item.classList.remove("active");
+            });
+            e.currentTarget.classList.add("active");
         });
-        e.currentTarget.classList.add("active");
-    });
-
-    $('[data-toggle="tooltip"]').tooltip();
-
-</script>
-
+    </script>
+</body>
 </html>

@@ -11,14 +11,15 @@
         </div>
     </div>
 
+    @if (session('status'))
+        @include('includes.alert.alert-success')
+    @endif
+
     <!-- <div class="container"> -->
         <div class="row">
             <!-- <div class="col-md-12"> -->
                 <div class="panel panel-default w-100 ml-3 mr-3">
                     <div class="panel-body">
-                        @if (session('status'))
-                            @include('includes.alert.alert-success')
-                        @endif
                         <div class="ticket-data">
                             <table class="table table-stripped table-striped">
                                 <tbody>
