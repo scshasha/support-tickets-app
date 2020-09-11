@@ -24,15 +24,30 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->is_admin === 1) {
-            redirect('/admin');
-        } else {
-            return view('home');
+        if (Auth::user()->is_admin == 1) {
+            return redirect('/admin');
+        } elseif(Auth::user()->is_admin == 2) {
+            return redirect('/dashboard');
         }
+
+        dd(Auth::user()->is_admin);
+
+        return view('home');
     }
 
-    public function administrator()
+    public function administratorDashboard()
     {
-        return view('dashboard');
+        if (Auth::user()->is_admin === 1) {
+            return view('dashboard');
+        }
+            
+    }
+
+    public function agentDashboard()
+    {
+        if (Auth::user()->is_admin === 2) {
+            return view('agent-dashboard');
+        }
+
     }
 }
