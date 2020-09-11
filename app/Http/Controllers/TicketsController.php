@@ -102,9 +102,8 @@ class TicketsController extends Controller
 
         if (Auth::user() && Auth::user()->is_admin === 1) {
             return view('admin.ticket-details', $viewData);
-        } else if (Auth::user() && Auth::user_admin === 2) {
-            // Agent view.
-            redirect('/assigned/tickets'); // @TODO: Create route & view
+        } else if (Auth::user() && Auth::user()->is_admin === 2) {
+            return view('agent.ticket-details', $viewData);
         }
 
         return view('tickets.single', $viewData);
