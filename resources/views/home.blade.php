@@ -3,6 +3,7 @@
 @section('title', 'Home')
 
 @section('content')
+
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
@@ -13,13 +14,7 @@
                     @if (session('status'))
                         @include('includes.alert.alert-success')
                     @endif
-
-                    @if(Auth::user()->is_admin)
-                        <!-- load admin widgets -->
-                        <p>See all <a href="{{ url('admin/tickets') }}">tickets</a></p>
-                    @else
-                        <p>See all your <a href="{{ url('tickets') }}">tickets</a> or <a href="{{ url('ticket/create') }}">open a new ticket</a></p>
-                    @endif
+                    <p>See all assigned <a href="{{ url('tickets') }}">tickets</a> or <a href="{{ url('ticket/create') }}">open a new ticket</a></p>
                 </div>
             </div>
         </div>

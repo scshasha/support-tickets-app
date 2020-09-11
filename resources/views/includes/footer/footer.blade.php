@@ -10,7 +10,7 @@
     <script src="{{ asset('plugins/datatables/media/js/jquery.dataTables.js') }}"></script>
     <script src="{{ asset('plugins/datatables/media/js/dataTables.bootstrap.js') }}"></script>
     <script src="{{ asset('plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js') }}"></script>
-
+    <script src="{{ asset('js/dashboard.js') }}"></script>
     <!-- Logout link Request Scritp -->
     <script type="text/javascript">
         // $('.js-post-action-link').on('click', (event) => {

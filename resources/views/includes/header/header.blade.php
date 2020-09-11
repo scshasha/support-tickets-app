@@ -6,16 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ env('APP_NAME') }} &bull; @yield('title')</title>
-        <!-- Fonts -->
-        <!-- <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet"> -->
         <!-- Styles -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         
-        
         <!--Bootstrap Stylesheet [ REQUIRED ]-->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-        <!--Jasmine Stylesheet [ REQUIRED ]-->
-        <!-- <link href="{{ asset('css/style.css') }}" rel="stylesheet"> -->
+        <!--Dashboard Stylesheet [ REQUIRED ]-->
+        <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/style-overrides.css') }}" rel="stylesheet">
         <!--Font Awesome [ OPTIONAL ]-->

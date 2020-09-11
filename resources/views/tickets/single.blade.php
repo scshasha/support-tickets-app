@@ -53,10 +53,10 @@
                             @foreach ($comments as $comment)
                             <ul class="list-unstyled media-block">
                                 <li class="mar-btm">
-                                    <div class="@if(Auth::user()->id === $comment->user_id) {{'media-right'}}@else{{'media-left'}}@endif">
+                                    <div class="@if($ticket->user_id === $comment->user_id) {{'media-right'}}@else{{'media-left'}}@endif">
                                         <img src="@if ($comment->user_id < 4) {{ url('img/av'.$comment->user_id.'.png') }}@else{{ url('img/user.png') }}@endif" alt="{{ $comment->user->name }}" class="img-responsive img-circle img-sm" />
                                     </div>
-                                    <div class="media-body pad-hor @if(Auth::user()->id === $comment->user_id) {{'speech-right'}}@else{{'speech-left'}}@endif">
+                                    <div class="media-body pad-hor @if($ticket->user_id === $comment->user_id) {{'speech-right'}}@else{{'speech-left'}}@endif">
                                         <div class="speech">
                                             <a href="#" class="media-heading">{{ ucfirst($comment->user->name) }}</a>
                                             <span class="media-meta speech-time"><small>{{ $comment->created_at->diffForHumans() }}</small></span>
@@ -70,6 +70,7 @@
                             @endforeach
                         </div>
                         @endif
+                        @auth
                         <div class="comment-form">
                             <form class="form" method="POST" action="{{ url('/comment') }}">
                                 {!! csrf_field() !!}
@@ -90,6 +91,7 @@
                                 </div>
                             </form>
                         </div>
+                        @endauth
                     </div>
                 </div>
             </div>
