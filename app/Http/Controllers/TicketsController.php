@@ -22,20 +22,19 @@ class TicketsController extends Controller
 
     public function index()
     {
-        
-        $tickets = Ticket::paginate(10);
-        $categories = Category::all();
-        
         if (Auth::user()) {
             if (Auth::user()->is_admin === 1) {
+                $tickets = Ticket::paginate(10);
+                $categories = Category::all();
                 return view('admin.tickets', compact('tickets', 'categories'));
             } elseif(Auth::user()->is_admin === 2) {
-                // @TODO: Create agent view.
-                return view('agent.tickets');
+                $tickets = Ticket::where('user_id', Auth::user()->id)->paginate(10);
+                $categories = Category::all();
+
+                return view('agent.tickets', compact('tickets', 'categories'));
             }
         }
-
-        return view('tickets.index', compact('tickets', 'categories'));
+        return redirect('/home')->with('error', 'Unauthorized.');
     }
 
 
@@ -113,24 +112,61 @@ class TicketsController extends Controller
 
     public function showByCurrentUser() {
 
-        $tickets = Ticket::where('user_id', Auth::user()->id)->paginate(10);
-        $categories = Category::all();
-        $viewData = compact('tickets', 'categories');
+        // $tickets = Ticket::where('user_id', Auth::user()->id)->paginate(10);
+        // $categories = Category::all();
+        // $viewData = compact('tickets', 'categories');
 
-        return view('tickets.list-user', $viewData);
+        // return view('tickets.list-user', $viewData);
     }
 
     public function close($ticket_id) {
-        $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
-        $ticket->status = 'Closed';
-        $ticket->save();
-        $ticketOwner = $ticket->user;
 
-        Mail::to(
-            $ticketOwner->email
-        )->send(new TicketStatusMail($ticket, $ticketOwner));
+        /**
+         * Ony allowing authenticated users to ation the status update.
+         * 
+         * Restricting status update to only administrator(s) and assigned agent(s)
+         * 
+         * @TODO: Update e-mail functionality.
+         */
+        $closeTicket = false;
+        $notify = ['agent'=>false,'admin'=>false,'author'=>true]; //Flags to know whom to e-mail of this action.
+        if (Auth::user()) {
+            // Get the ticket to close.
+            $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
 
-        return redirect()->back()->with("status", "Ticket closed.");
+            if (Auth::user()->is_admin === 1) {
+                $closeTicket = true;
+                $notify['agent'] = true;
+            } else if (Auth::user()->is_admin === 2) {
+                $notify['admin'] = true;
+                // Check if agent is assigned to this ticket.
+                if ($ticket->user_id === Auth::user()->id) {
+                    $closeTicket = true;
+                }
+            }
+
+            if ($closeTicket) {
+                $ticket->status = 'Closed';
+                $ticket->save();
+                /**
+                 * App\Mail\TicketStatusMail expects parameter 2 to be a User instance.
+                 * Therefore create such instance from ticket object data.
+                 * 
+                 * @TODO: Refactor emailing logic.
+                 */
+                $author = new User();
+                $author->name = $ticket->author_name;
+                $author->email = $ticket->author_email;
+
+                Mail::to(
+                    $author->email
+                )->send(new TicketStatusMail($ticket, $author));
+
+                return redirect()->back()->with("status", "Ticket closed.");
+            }
+        }
+
+        
 
     }
 
