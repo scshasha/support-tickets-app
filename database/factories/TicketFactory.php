@@ -18,7 +18,7 @@ $factory->define(Ticket::class, function (Faker $faker) {
         "message" => $faker->paragraph,
         "priority" => $priority[$faker->numberBetween(0, 2)],
         "status" => "Open",
-        "user_id" => $faker->numberBetween(2, 5),
+        "user_id" => $faker->numberBetween(2, 6),
         "ticket_id" => strtoupper(str_random(15)),
         "category_id" => Category::all()->random()->id,
         "author_name" => $faker->name,
