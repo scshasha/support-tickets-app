@@ -23,7 +23,7 @@
                             <a class="dropdown-item" href="{{ url('ticket/create') }}"> <i class="fa fa-plus fa-fw"></i> Create Ticket </a>
                         </li>
                         <li>
-                            @if (Auth::user()->is_admin)
+                            @if (Auth::user()->is_admin === 1)
                             <a class="dropdown-item" href="{{ url('admin/tickets') }}">  <i class="fa fa-ticket fa-fw"></i> All Tickets </a>
                             @else
                             <a class="dropdown-item" href="{{ url('/tickets') }}">  <i class="fa fa-ticket fa-fw"></i> All Tickets </a>
