@@ -39,10 +39,6 @@
                             <td>{{ $ticket->message }}</td>
                         </tr>
                         <tr>
-                            <td>Status</td>
-                            <td><span class="label @if ($ticket->status === 'Open') {{ 'label-success' }}@else{{ 'label-danger' }}@endif">{{ $ticket->status }}</span></td>
-                        </tr>
-                        <tr>
                             <td>Author Name</td>
                             <td><a href="#" style="text-decoration: underline; color: rgba(0,0,0,0.6);">{{ ucwords($ticket->author_name) }}</a></td>
                         </tr>
@@ -80,7 +76,7 @@
                                 {!! '<span>Unassigned</span>' !!}
                                 @else
                                 @foreach ($users as $user)
-                                    @if ($ticket->user_id === $user->id) {!! '<a href="user/$user->id">'.$user->name.'</a>' !!}@endif
+                                    @if ($ticket->user_id === $user->id) {!! '<a href="user/'.$user->id.'">'.$user->name.'</a>' !!}@endif
                                 @endforeach
                                 @endif
 

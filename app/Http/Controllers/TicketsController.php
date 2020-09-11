@@ -27,7 +27,7 @@ class TicketsController extends Controller
                 $tickets = Ticket::paginate(10);
                 $categories = Category::all();
                 $agents = User::all()->where('is_admin', 2);
-                
+
                 return view('admin.tickets', compact('tickets', 'categories', 'agents'));
             } elseif(Auth::user()->is_admin === 2) {
                 $tickets = Ticket::where('user_id', Auth::user()->id)->paginate(10);
@@ -88,7 +88,7 @@ class TicketsController extends Controller
         // Mail::to(implode(';', $to))->send(new TicketCreatedMail($ticket)); // @TODO: Fix email functionality.
 
         // Response message.
-        $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s" target="_blank"><i class="fa fa-external-link"></i> here</a>.', env('APP_URL'), $ticket->ticket_id);
+        $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s" target="_blank"> here <i class="fa fa-external-link"></i></a>.', env('APP_URL'), $ticket->ticket_id);
 
         return redirect()->back()->with("status", $responseMessage);
     }

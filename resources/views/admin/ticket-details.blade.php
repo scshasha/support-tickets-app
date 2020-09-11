@@ -83,7 +83,7 @@
                                 {!! '<span>Unassigned</span>' !!}
                                 @else
                                 @foreach ($users as $user)
-                                    @if ($ticket->user_id === $user->id) {!! '<a href="user/$user->id">'.$user->name.'</a>' !!}@endif
+                                    @if ($ticket->user_id === $user->id) {!! '<a href="user/'.$user->id.'">'.$user->name.'</a>' !!}@endif
                                 @endforeach
                                 @endif
 

@@ -23,6 +23,7 @@
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Assigned Agent</th>
                     <th>Category</th>
                     <th>Priority</th>
                     <th>Status</th>
@@ -33,6 +34,19 @@
                 @foreach($tickets as $ticket)
                 <tr>
                     <td><a href="{{ url('tickets/'.$ticket->ticket_id) }}">#{{ $ticket->ticket_id }} - {{ $ticket->title }}</a></td>
+                    <td>
+                        @if(!$ticket->user_id) 
+                        {!! 'Unassigned' !!}
+
+                        @else
+                            <!-- <span class="label label-default"> -->
+                                @foreach($agents as $agent)
+                                    @if ($agent->id === $ticket->user_id){{ ucfirst($agent->name) }}@endif
+                                @endforeach
+                            <!-- </span> -->
+                        @endif
+                        
+                    </td>
                     <td>
                         @foreach($categories as $category)
                             @if ($category->id === $ticket->category_id) {!! '<span class="label label-default">'.$category->name.'</span>' !!}@endif
