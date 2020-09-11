@@ -105,7 +105,7 @@ class TicketsController extends Controller
             return view('admin.ticket-details', $viewData);
         } else if (Auth::user() && Auth::user_admin === 2) {
             // Agent view.
-            redirect('/assigned/tickets'); // @TODO: Create view
+            redirect('/assigned/tickets'); // @TODO: Create route & view
         }
 
         return view('tickets.single', $viewData);
@@ -144,9 +144,15 @@ class TicketsController extends Controller
         if (Auth::user() && Auth::user()->is_admin === 1) {
             $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
             $agents = User::all()->where('is_admin', 2);
-            $category = $ticket->category;
+            $categories = Category::all();
+
+            // foreach($agents as $agent) {
+            //     var_dump($agent->id);
+            // }
+            // // dd($agents);
+            // dd($categories);
     
-            return view('admin.ticket-edit', compact('ticket', 'category', 'agents')); // @TODO: Create View.
+            return view('admin.ticket-edit', compact('ticket', 'categories', 'agents')); // @TODO: Create View.
         }
 
         return redirect()->back()->with("error", "You are not authorized to perform this action.");
@@ -155,24 +161,23 @@ class TicketsController extends Controller
 
     public function update(Request $request, Ticket $ticket)
     {
-        if (Auh::user() && Auth::user()->is_admin) {
+        if (Auth::user() && Auth::user()->is_admin) {
             $this->validate($request, [
-                'title'     => 'required',
-                'message'  =>  'required',
                 'priority'  =>  'required',
                 'status'  =>  'required',
                 'category_id'  =>  'required',
             ]);
 
             $input = [
-                'title'         =>  $request->input('title'),
-                'message'       =>  $request->input('message'),
                 'category_id'   =>  $request->input('category_id'),
                 'priority'      =>  $request->input('priority'),
-                'status'        =>  $request->input('status'),
                 'user_id'        =>  !empty($request->input('user_id')) ? $request->input('user_id') : null,
+                'status'        =>  $request->input('status'),
+                'ticket_id'        =>  $request->input('ticket_id'),
             ];
+            // dd($input);            
 
+            $ticket = Ticket::where('ticket_id', $input['ticket_id'])->firstOrFail();
             // Check if we should notify agent.
             if (!empty($input['user_id'])) {
                 if ($ticket->user_id !== $input['user_id']) {
@@ -180,15 +185,18 @@ class TicketsController extends Controller
                 }
             }
 
-            $ticket->title = $input['title'];
-            $ticket->message = $input['message'];
+
+            // $ticket->title = $input['title'];
+            // $ticket->ticket_id = $input['ticket_id'];
+            // $ticket->message = $input['message'];
             $ticket->category_id = $input['category_id'];
             $ticket->priority = $input['priority'];
             $ticket->status = $input['status'];
-            
+            $ticket->user_id = $input['user_id'];
+
             $ticket->save();
 
-            return redirect()->back()->with('status', 'Ticket has been updated');
+            return redirect('/admin/tickets/edit/'.$ticket->ticket_id)->with('status', 'Ticket has been updated');
         }
     }
 
