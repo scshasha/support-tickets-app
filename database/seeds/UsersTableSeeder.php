@@ -17,7 +17,6 @@ class UsersTableSeeder extends Seeder
         // Truncate table
         User::truncate();
 
-
         // Create Admin User
         User::create([
             'name' => $faker->firstName,
@@ -26,7 +25,6 @@ class UsersTableSeeder extends Seeder
             'password' => 'password',
         ]);
 
-        
         // Create 5 Agent Users
         for($i=1;$i <= 5;$i++) {
             User::create([
