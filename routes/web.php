@@ -9,7 +9,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/admin', 'HomeController@administrator')->name('administrator');
+Route::get('/admin', 'HomeController@administratorDashboard')->name('admin_dash');
+Route::get('/dashboard', 'HomeController@agentDashboard')->name('agent_dash');
 
 Auth::routes();
 
@@ -24,12 +25,9 @@ Route::post('comment', 'CommentsController@storeComment')->name('create comment'
 Route::get('tickets/{ticket_id}', 'TicketsController@show')->name('ticket_show');
 
 Route::group(['middleware' => 'auth'], function() {
-    // list tickets.
     Route::get('tickets', 'TicketsController@index');
-    // Get tickets assigned to an agent
     Route::get('tickets/assigned/{id}', 'TicketsController@getAgentTickets');
-    // Show Ticket Collection On Current User (Authenticated)
-    Route::get('tickets', 'TicketsController@showByCurrentUser')->name('tickets_show');
+    Route::post('tickets/close/{ticket_id}', 'TicketsController@close')->name('close');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function() {
