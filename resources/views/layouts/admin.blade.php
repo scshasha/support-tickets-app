@@ -55,6 +55,10 @@
         .alert button.close {
             top: 23%;
         }
+
+        strong {
+            font-weight: 700 !important;
+        }
     </style>
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
 </head>
