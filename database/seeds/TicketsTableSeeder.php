@@ -14,6 +14,6 @@ class TicketsTableSeeder extends Seeder
     {
         Ticket::truncate();
 
-        factory(Ticket::class, 10)->create();
+        factory(Ticket::class, 50)->create();
     }
 }
