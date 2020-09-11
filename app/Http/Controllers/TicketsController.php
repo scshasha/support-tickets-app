@@ -83,10 +83,10 @@ class TicketsController extends Controller
         $ticket->save();
 
         // Notify Admin of the new ticket
-        Mail::to(implode(';', $to))->send(new TicketCreatedMail(Auth::user(), $ticket));
+        // Mail::to(implode(';', $to))->send(new TicketCreatedMail($ticket)); // @TODO: Fix email functionality.
 
         // Response message.
-        $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s">here</a>.', env('APP_URL'), $ticket->ticket_id);
+        $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s" target="_blank"><i class="fa fa-external-link"></i> here</a>.', env('APP_URL'), $ticket->ticket_id);
 
         return redirect()->back()->with("status", $responseMessage);
     }
@@ -96,9 +96,11 @@ class TicketsController extends Controller
     public function show($ticket_id)
     {
         $ticket = Ticket::where('ticket_id', $ticket_id)->firstOrFail();
-        $category = $ticket->category;
+        // $category = $ticket->category;
+        $categories = Category::all();
         $comments = $ticket->comments;
-        $viewData = compact('ticket', 'category', 'comments');
+        $users = User::all()->where('is_admin', 2);
+        $viewData = compact('ticket', 'categories', 'comments', 'users');
 
         if (Auth::user() && Auth::user()->is_admin === 1) {
             return view('admin.ticket-details', $viewData);

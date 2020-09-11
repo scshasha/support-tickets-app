@@ -9,6 +9,8 @@
     <h1 class="h2 mt-0">{{ $ticket->title }}</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group">
+            <a href="{{ url('admin/tickets/edit/'.$ticket->ticket_id) }}" class="btn btn-lg btn-outline-warning btn-icon icon-lg fa fa-edit add-tooltip ml-2" data-placement="top" data-toggle="tooltip" data-original-title="Edit Ticket" type="submit">
+            </a>
             <form action="{{ url('admin/tickets/close/'.$ticket->ticket_id) }}" method="POST">
                 {!! csrf_field() !!}
                 <button class="btn btn-lg btn-outline-success btn-icon icon-lg fa fa-check add-tooltip ml-2" data-placement="top" data-toggle="tooltip" data-original-title="Resolve Ticket" type="submit">
@@ -33,7 +35,7 @@
         </div>
         <div class="panel-body">
             <div class="ticket-data">
-                <table class="table table-stripped table-striped">
+                <table class="table table-striped">
                     <tbody>
                         <tr>
                             <td>Title</td>
@@ -44,20 +46,48 @@
                             <td>{{ $ticket->message }}</td>
                         </tr>
                         <tr>
-                            <td>Status</td>
-                            <td><span class="label @if ($ticket->status === 'Open') {{ 'label-success' }}@else{{ 'label-danger' }}@endif">{{ $ticket->status }}</span></td>
+                            <td>Author Name</td>
+                            <td><a href="#" style="text-decoration: underline; color: rgba(0,0,0,0.6);">{{ ucwords($ticket->author_name) }}</a></td>
                         </tr>
                         <tr>
-                            <td>Name</td>
-                            <td><a href="#" style="text-decoration: underline; color: rgba(0,0,0,0.6);">{{ ucfirst($ticket->author_name) }}</a></td>
-                        </tr>
-                        <tr>
-                            <td>E-Mail</td>
-                            <td><a href="#" style="text-decoration: underline; color: rgba(0,0,0,0.6);">{{ ucfirst($ticket->author_email) }}</a></td>
+                            <td>Author E-Mail</td>
+                            <td><a href="#" style="text-decoration: underline; color: rgba(0,0,0,0.6);">{{ $ticket->author_email }}</a></td>
                         </tr>
                         <tr>
                             <td>Created On</td>
                             <td>{{ $ticket->created_at->diffForHumans() }}</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Status</td>
+                            <td><span class="label @if ($ticket->status === 'Open') {{ 'label-success' }}@else{{ 'label-danger' }}@endif">{{ $ticket->status }}</span></td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Prioirty</td>
+                            <td>{{ ucfirst($ticket->priority) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Category</td>
+                            <td>
+                                @foreach($categories as $category)
+                                    @if ($ticket->category_id === $category->id) {{ $category->name }}@endif
+                                @endforeach
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Assigned To</td>
+                            <td>
+                                @if (!$ticket->user_id) 
+                                {!! '<span>Unassigned</span>' !!}
+                                @else
+                                @foreach ($users as $user)
+                                    @if ($ticket->user_id === $user->id) {!! '<a href="user/$user->id">'.$user->name.'</a>' !!}@endif
+                                @endforeach
+                                @endif
+
+                            </td>
                         </tr>
                     </tbody>
                 </table>
