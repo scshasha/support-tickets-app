@@ -11,7 +11,7 @@ The setup guide assumes that you have the above requirements.
 
 ### Running the Docker setup
 
-Clone repo: (or manually download the [env-setup](https://gitlab.com/epione-tests/scshasha-be/-/tree/env-setup) branch and run the install script)
+Clone repo: (or manually download the [setup](https://github.com/scshasha/support-tickets-app/-/tree/setup) branch and run the install script)
 
 > git clone https://github.com/scshasha/support-tickets-app.git
 
@@ -36,7 +36,7 @@ NB: Ports may change depending on your `docker-compose.yml` file configuration. 
 
 ### Running on other local environments
 
-> git clone git@gitlab.com:epione-tests/scshasha-be.git
+> git clone https://github.com/scshasha/support-tickets-app.git
 
 > git pull origin master
 
@@ -46,24 +46,26 @@ NB: Ports may change depending on your `docker-compose.yml` file configuration. 
 
 ---
 
-## configurations
+## Configurations
 
-Files and variable to update.
+Files and Variables to update.
 
-#### On Docker (.env)
-
-```
-DB_NAME=databasename
-DB_USER=userpassowrd
-DB_PASSWORD=userpassword
-```
-
-#### On Laravel (.env)
+#### Updated Docker environment file (./.env)
 
 ```
-DB_NAME=databasename
-DB_USER=userpassowrd
-DB_PASSWORD=userpassword
+DB_DATABASE=databasename
+DB_USERNAME=userpassowrd
+DB_PASSWORD=password
+DB_ROOT_PASSWORD=password
+```
+
+#### Updated Laravel environment files (.env)./code/html/.env
+
+```
+DB_DATABASE=databasename
+DB_USERNAME=userpassowrd
+DB_PASSWORD=password
+DB_ROOT_PASSWORD=password
 DB_HOST=mariadb
 ```
 
@@ -90,13 +92,6 @@ x6 users will be created after running the database seeds with the following cre
 - U: agent5@supporttickets.com P: password
 
 
-## [Additional]: When using Docker Toolbox (as I am) you may be required to do the following configurations to your setup
-
-- Port mapping - Basically you are telling your VM that your machines `:8001` is listening to its `:80` traffic. If you wish to change these port you may do so by updating `./docker-compose.yml`
-- By default on Docker Toolbox http://localhost (which in reality is address 127.0.0.1) will not work, instead use `YOUR_VM_ASSIGNED_IP:8001`. To find that IP execute command `docker-machine ip`. In my case I access it via [https://192.168.99.100:8001](https://192.168.99.100:8001)
-- Although the install bash script should be taking care of setting up the application, there are instances where migrations fail, in such cases you will need to sh into the php container by running `docker-compose exec php sh` from there you can run Laravel commands i.e `php artisan migrate:refresh` etc.
-
-#### Commands:
-
-- `php artisan migrate` to create tables
-- `php artisan db:seed --class=BookSeeder` to import csv data.
+## Running Laravel commands on Docker
+- `docker-compose exec php sh` will open a shell session on/in your `php` container, enabling your to interact with your Laravel application via terminal.
+- `docker-compose exec mariadb sh` will open a shell session on/in your `mariadb` container, enabling you to interact with your DB via terminal.
