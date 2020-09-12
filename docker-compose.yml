@@ -1,0 +1,98 @@
+version: "3"
+
+networks:
+  tickets-network:
+    driver: bridge
+
+services:
+  php:
+    image: wodby/php:$PHP_TAG
+    container_name: ${PROJECT_NAME}_php
+    environment: 
+      PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
+      DB_HOST: $DB_HOST
+      DB_USER: $DB_USERNAME
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_DATABASE
+      PHP_FPM_USER: wodby
+      PHP_FPM_GROUP: wodby
+    volumes:
+      - "./code/html:/var/www/html"
+    networks: 
+      - tickets-network
+  nginx:
+    image: wodby/nginx:$NGINX_TAG
+    container_name: ${PROJECT_NAME}_nginx
+    depends_on:
+      - php
+    environment:
+      NGINX_STATIC_OPEN_FILE_CACHE: "off"
+      NGINX_ERROR_LOG_LEVEL: debug
+      NGINX_BACKEND_HOST: php
+      NGINX_VHOST_PRESET: php
+      NGINX_SERVER_ROOT: /var/www/html/public
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./code/html:/var/www/html"
+    networks: 
+      - tickets-network
+  mariadb:
+    image: wodby/mariadb:$MARIADB_TAG
+    container_name: ${PROJECT_NAME}_mariadb
+    stop_grace_period: 30s
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_ROOT_PASSWORD
+      MYSQL_DATABASE: $DB_DATABASE
+      MYSQL_USER: $DB_USERNAME
+      MYSQL_PASSWORD: $DB_PASSWORD
+    volumes:
+      - "./mariadb-init:/docker-entrypoint-initdb.d"
+    networks: 
+      - tickets-network
+  # traefik:
+  #   image: traefik:v2.0
+  #   container_name: ${PROJECT_NAME}_traefik
+  #   command:
+  #     - "--log.level=DEBUG"
+  #     - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entrypoints.web.address=:80"
+  #   ports: 
+  #     - "8000:80"
+  #     # - "80:80"
+  #     # - "8080:8080"
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   networks: 
+  #     - tickets-network
+  # portainer:
+  #   image: portainer/portainer
+  #   container_name: ${PROJECT_NAME}_portainer
+  #   command: --no-auth -H unix:///var/run/docker.sock
+  #   volumes: 
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   networks:
+  #     - tickets-network
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: ${PROJECT_NAME}_mailhog
+    restart: always
+    networks: 
+      - tickets-network
+    ports: 
+      - "1025:1025"
+      - "8025:8025"
+  adminer:
+    image: adminer:latest
+    container_name: ${PROJECT_NAME}_adminer
+    environment: 
+      ADMINER_SALT: adminer-salt
+    networks: 
+      - tickets-network
+    ports: 
+      - "8080:8080"
+
+  
