@@ -32,7 +32,7 @@ mailhog
 - Web: [http://localhost](http://localhost)
 - MailHog: [http://localhost:8025](http://localhost:8025)
 
-NB: Ports may change depending on your `docker-compose.yml` file configuration.
+NB: Ports may change depending on your `docker-compose.yml` file configuration. If using Docker Toolbox you be required to replace [localhost]() with [192.168.99.100]() which is the default IP or any other assigned IP. Run `docker-machine ip` for your IP.
 
 ### Running on other local environments
 
