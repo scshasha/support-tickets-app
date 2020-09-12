@@ -15,7 +15,7 @@ The setup guide assumes that you have the above requirements.
 
 ### Running the Docker setup
 
-Clone repo: (or manually download the [setup](https://github.com/scshasha/support-tickets-app/-/tree/setup) branch and run the install script)
+Clone repo: (or manually download the [setup](https://github.com/scshasha/support-tickets-app/tree/setup) branch and run the install script)
 
 > git clone https://github.com/scshasha/support-tickets-app.git
 
