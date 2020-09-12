@@ -28,12 +28,9 @@ nginx
 adminer
 mailhog
 ```
-- Database GUI:
-> [http://localhost:8080](http://localhost:8080)
-- Web:
-> [http://localhost](http://localhost)
-- MailHog:
-> [http://localhost:8025](http://localhost:8025)
+- Database GUI: [http://localhost:8080](http://localhost:8080)
+- Web: [http://localhost](http://localhost)
+- MailHog: [http://localhost:8025](http://localhost:8025)
 
 NB: Ports may change depending on your `docker-compose.yml` file configuration.
 
