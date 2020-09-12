@@ -1,14 +1,13 @@
-# scshasha-be
+# Support Ticket Application
 
 ## Requirements
 
 - [Laravel work environment](https://laravel.com/docs/5.x)
-- [Redis](https://redis.io/)
 - [Dev Desktop / Docker Toolbox](https://www.docker.com/products/docker-desktop) _(Optional)_
 
 ## Setup
 
-The setup guide assumes that you have the above requirements. I will be using Docker Toolbox tool to run the Laravel API in this demonstration.
+The setup guide assumes that you have the above requirements.
 
 ### Running the Docker setup
 
