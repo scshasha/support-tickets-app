@@ -95,6 +95,7 @@ x6 users will be created after running the database seeds with the following cre
 - U: agent4@supporttickets.com P: password
 - U: agent5@supporttickets.com P: password
 
+The above can be updated on the `UsersTableSeeder` class (./database/seeds/).
 
 ## Running Laravel commands on Docker
 - `docker-compose exec php sh` will open a shell session on/in your `php` container, enabling your to interact with your Laravel application via terminal.
