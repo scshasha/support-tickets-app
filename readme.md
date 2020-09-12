@@ -13,28 +13,26 @@ The setup guide assumes that you have the above requirements.
 
 Clone repo: (or manually download the [env-setup](https://gitlab.com/epione-tests/scshasha-be/-/tree/env-setup) branch and run the install script)
 
-> git clone git@gitlab.com:epione-tests/scshasha-be.git
+> git clone https://github.com/scshasha/support-tickets-app.git
 
-> git pull origin env-setup --force
+> git pull origin setup --force
 
 > . install.sh
 
-The bash script will run the application setup
-
-- Laravel application will run on [http://localhost:8001](http://localhost:8001) (note that your IP may be different)
-- Use [http://localhost:8080](http://localhost:8080) for Adminer (Database GUI). You can also use bash by running `docker-compose exec mariadb sh` (Login credentials will be on the .env file)
-- For email [http://localhost:8002](http://localhost:8002) [MailHog]
-
-* Ensure you have these containers running:
+The following containers should be running:
 
 ```
 mariadb
 php
 nginx
-redis
 adminer
 mailhog
 ```
+Database GUI:[http://localhost:8080](http://localhost:8080)
+Web:[http://localhost:8080](http://localhost)
+MailHog:[http://localhost:8025](http://localhost:8025)
+
+NB: Ports may change depending on your `docker-compose.yml` file configuration.
 
 ### Running on other local environments
 
@@ -67,16 +65,18 @@ DB_NAME=databasename
 DB_USER=userpassowrd
 DB_PASSWORD=userpassword
 DB_HOST=mariadb
-
-QUEUE_DRIVER= redis
-
-BOOKS_CSV_API=https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/master/books.csv
-
-REDIS_HOST=(DOCKER MACHINE IP OR SERVICE NAME [default is localhost])
-REDIS_CLIENT=predis
 ```
 
-DB migrations. Run:
+DB migrations Run:
+
+If you are using Docker the `install.sh` script will take care of migrations and db seeds.
+
+On non-docker users run the following:
+- run migrations
+```php artisan migrate```
+- run db seeds
+```php artisan db:seed```
+
 
 > php artisan migrate
 
