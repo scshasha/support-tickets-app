@@ -2,7 +2,7 @@
 
 A simple support ticket logging application to demostrate an small sclale online help desk. A user creates a  ticket, they recieve a notification with a link to view their tickets progress. The administrator gets notified of the newly added ticket. They are then able to update,delete, and assign the ticket to an agent. The agent gets a notification of the ticket assigned to them and they are able to comment and/or close/resolve the ticket.
 
-Agents cannot see tickets that are not assigned to them. Ticket authors only (at this point) see the updates on their tickets via the link that was provided upon ticket creation and get an e-mail notification with every major ticket update. Administrtors are able to see every ticket.
+Agents cannot see tickets that are not assigned to them. Ticket authors only (at this point) see the updates on their tickets via the link that was provided upon ticket creation and get an e-mail notification on ticket updates. Administrtors are able to see every ticket.
 
 ## Requirements
 
