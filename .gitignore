@@ -5,3 +5,5 @@
 /phpdocker/*
 /**.csv
 /.idea
+./.env
+!./.env.sample
