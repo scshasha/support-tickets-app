@@ -1,45 +1,46 @@
-# scshasha-be
+# Support Ticket Application
+
+A simple support ticket logging application to demostrate an small sclale online help desk. A user creates a  ticket, they recieve a notification with a link to view their tickets progress. The administrator gets notified of the newly added ticket. They are then able to update,delete, and assign the ticket to an agent. The agent gets a notification of the ticket assigned to them and they are able to comment and/or close/resolve the ticket.
+
+Agents cannot see tickets that are not assigned to them. Ticket authors only (at this point) see the updates on their tickets via the link that was provided upon ticket creation and get an e-mail notification on ticket updates. Administrtors are able to see every ticket.
 
 ## Requirements
 
 - [Laravel work environment](https://laravel.com/docs/5.x)
-- [Redis](https://redis.io/)
 - [Dev Desktop / Docker Toolbox](https://www.docker.com/products/docker-desktop) _(Optional)_
 
 ## Setup
 
-The setup guide assumes that you have the above requirements. I will be using Docker Toolbox tool to run the Laravel API in this demonstration.
+The setup guide assumes that you have the above requirements.
 
 ### Running the Docker setup
 
-Clone repo: (or manually download the [env-setup](https://gitlab.com/epione-tests/scshasha-be/-/tree/env-setup) branch and run the install script)
+Clone repo: (or manually download the [setup](https://github.com/scshasha/support-tickets-app/tree/setup) branch and run the install script)
 
-> git clone git@gitlab.com:epione-tests/scshasha-be.git
+> git clone https://github.com/scshasha/support-tickets-app.git
 
-> git pull origin env-setup --force
+> git pull origin setup --force
 
 > . install.sh
 
-The bash script will run the application setup
-
-- Laravel application will run on [http://localhost:8001](http://localhost:8001) (note that your IP may be different)
-- Use [http://localhost:8080](http://localhost:8080) for Adminer (Database GUI). You can also use bash by running `docker-compose exec mariadb sh` (Login credentials will be on the .env file)
-- For email [http://localhost:8002](http://localhost:8002) [MailHog]
-
-* Ensure you have these containers running:
+The following containers should be running:
 
 ```
 mariadb
 php
 nginx
-redis
 adminer
 mailhog
 ```
+- Database GUI: [http://localhost:8080](http://localhost:8080)
+- Web: [http://localhost](http://localhost)
+- MailHog: [http://localhost:8025](http://localhost:8025)
+
+NB: Ports may change depending on your `docker-compose.yml` file configuration. If using Docker Toolbox you be required to replace [localhost]() with [192.168.99.100]() which is the default IP or any other assigned IP. Run `docker-machine ip` for your IP.
 
 ### Running on other local environments
 
-> git clone git@gitlab.com:epione-tests/scshasha-be.git
+> git clone https://github.com/scshasha/support-tickets-app.git
 
 > git pull origin master
 
@@ -49,45 +50,53 @@ mailhog
 
 ---
 
-## configurations
+## Configurations
 
-Files and variable to update.
+Files and Variables to update.
 
-#### On Docker (.env)
-
-```
-DB_NAME=databasename
-DB_USER=userpassowrd
-DB_PASSWORD=userpassword
-```
-
-#### On Laravel (.env)
+#### Updated Docker environment file (./.env)
 
 ```
-DB_NAME=databasename
-DB_USER=userpassowrd
-DB_PASSWORD=userpassword
+DB_DATABASE=databasename
+DB_USERNAME=userpassowrd
+DB_PASSWORD=password
+DB_ROOT_PASSWORD=password
+```
+
+#### Updated Laravel environment files (.env)./code/html/.env
+
+```
+DB_DATABASE=databasename
+DB_USERNAME=userpassowrd
+DB_PASSWORD=password
+DB_ROOT_PASSWORD=password
 DB_HOST=mariadb
-
-QUEUE_DRIVER= redis
-
-BOOKS_CSV_API=https://raw.githubusercontent.com/zygmuntz/goodbooks-10k/master/books.csv
-
-REDIS_HOST=(DOCKER MACHINE IP OR SERVICE NAME [default is localhost])
-REDIS_CLIENT=predis
 ```
 
-DB migrations. Run:
+DB migrations Run:
 
+If you are using Docker the `install.sh` script will take care of migrations and db seeds.
+
+On non-docker users run the following:
+- migration cmd:
 > php artisan migrate
+- db seed cmd:
+> php artisan db:seed
 
-## [Additional]: When using Docker Toolbox (as I am) you may be required to do the following configurations to your setup
 
-- Port mapping - Basically you are telling your VM that your machines `:8001` is listening to its `:80` traffic. If you wish to change these port you may do so by updating `./docker-compose.yml`
-- By default on Docker Toolbox http://localhost (which in reality is address 127.0.0.1) will not work, instead use `YOUR_VM_ASSIGNED_IP:8001`. To find that IP execute command `docker-machine ip`. In my case I access it via [https://192.168.99.100:8001](https://192.168.99.100:8001)
-- Although the install bash script should be taking care of setting up the application, there are instances where migrations fail, in such cases you will need to sh into the php container by running `docker-compose exec php sh` from there you can run Laravel commands i.e `php artisan migrate:refresh` etc.
+The db seed will create dummy data on `users`, `tickets`, and `categories`.
 
-#### Commands:
+### Using the application
+x6 users will be created after running the database seeds with the following credentials:
+- U: admin@supporttickets.com P: password
+- U: agent1@supporttickets.com P: password
+- U: agent2@supporttickets.com P: password
+- U: agent3@supporttickets.com P: password
+- U: agent4@supporttickets.com P: password
+- U: agent5@supporttickets.com P: password
 
-- `php artisan migrate` to create tables
-- `php artisan db:seed --class=BookSeeder` to import csv data.
+The above can be updated on the `UsersTableSeeder` class (./database/seeds/).
+
+## Running Laravel commands on Docker
+- `docker-compose exec php sh` will open a shell session on/in your `php` container, enabling your to interact with your Laravel application via terminal.
+- `docker-compose exec mariadb sh` will open a shell session on/in your `mariadb` container, enabling you to interact with your DB via terminal.
