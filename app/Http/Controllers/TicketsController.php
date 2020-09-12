@@ -79,13 +79,33 @@ class TicketsController extends Controller
             'priority'      =>  'low',
             'status'        =>  "Open",
         ];
-        // Ticket::create($input);
 
         $ticket = new Ticket($input);
         $ticket->save();
 
-        // Notify Admin of the new ticket
-        // Mail::to(implode(';', $to))->send(new TicketCreatedMail($ticket)); // @TODO: Fix email functionality.
+        /**
+         * Send notification to an administrator about the newly created ticket.
+         * 
+         * @TODO: Update implementation. Although for now we are assuming that there is only one administrator
+         *        We need to update the e-mailing functionality to also work for multiple admins.
+         */
+
+        $adminEmail = User::where('is_admin', 1)->firstOrFail()->email;
+        // dd($adminEmail);
+        $data=[
+            'email_template' => 'admin','email_subject' => 'New support ticket.'
+        ];
+
+        // Send notification to administrator.
+        if ($adminEmail) { 
+            Mail::to($adminEmail)->send(new TicketCreatedMail($data, $ticket)); 
+        }
+
+        // Send notifcation to the ticket author.
+        $data=[
+            'email_template'=>'author','email_subject'=>'Ticket submitted.'
+        ];
+        Mail::to($ticket->author_email)->send(new TicketCreatedMail($data, $ticket));
 
         // Response message.
         $responseMessage = sprintf('Your ticket is submitted, we will be in touch. You can view the ticket status <a href="%s/tickets/%s" target="_blank"> here <i class="fa fa-external-link"></i></a>.', env('APP_URL'), $ticket->ticket_id);
@@ -185,13 +205,7 @@ class TicketsController extends Controller
             $agents = User::all()->where('is_admin', 2);
             $categories = Category::all();
 
-            // foreach($agents as $agent) {
-            //     var_dump($agent->id);
-            // }
-            // // dd($agents);
-            // dd($categories);
-    
-            return view('admin.ticket-edit', compact('ticket', 'categories', 'agents')); // @TODO: Create View.
+            return view('admin.ticket-edit', compact('ticket', 'categories', 'agents'));
         }
 
         return redirect()->back()->with("error", "You are not authorized to perform this action.");
@@ -220,7 +234,9 @@ class TicketsController extends Controller
             // Check if we should notify agent.
             if (!empty($input['user_id'])) {
                 if ($ticket->user_id !== $input['user_id']) {
-                    // Send notification.
+                    $agentEmail = User::where('id', $input['user_id'])->firstOrFail()->email;
+                    $data = ['email_template'=>"agent", 'email_subject'=>"Assigned To A Ticket."];
+                    Mail::to($agentEmail)->send(new \App\Mail\TicketAssignedMail($data, $ticket));
                 }
             }
 

@@ -47,7 +47,7 @@
 
 
                             <div class="form-group{{ $errors->has('message') ?  ' has-error':'' }}">
-                                    <textarea name="message" id="message" rows="10" class="form-control" placeholder="Content"></textarea>
+                                    <textarea name="message" id="message" rows="6" class="form-control" placeholder="Content"></textarea>
                                     @if ($errors->has('message'))
                                         <span class="help-block text-danger bg-danger">
                                             <strong>{{ $errors->first('message') }}</strong>

@@ -14,27 +14,19 @@ class TicketCreatedMail extends Mailable
     use Queueable, SerializesModels;
 
     protected $data = [];
-
+    protected $template = '';
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(User $user, Ticket $ticket)
+    public function __construct($data, $ticket)
     {
-
-        $this->subject("$ticket->tile (Ticket ID: $ticket->ticket_id)");
-
+        $this->subject($data['email_subject']);
+        $this->template = $data['email_template'];
         $this->data = [
-            'contactName' => $user->name,
-            'ticketTitle' => $ticket->title,
-            'ticketStatus' => $ticket->status,
-            'ticketPriority' => $ticket->priority,
-            'ticketId' => $ticket->ticket_id,
-            'ticketUri' => sprintf('%s/tickets/%s', env('APP_URL'), $ticket->ticket_id),
-            'ticketUrlText' => "click here to view ticket on our online platform"
+            'uri' => sprintf('%s/%s/%s', env('APP_URL'), ($this->template === 'admin') ? 'admin/tickets':'tickets', $ticket->ticket_id),
         ];
-        //
     }
 
     /**
@@ -44,6 +36,8 @@ class TicketCreatedMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.ticket-created')->with($this->data);
+        return $this->markdown(
+            ($this->template === 'admin') ? 'emails.admin-new-ticket' : 'emails.user-new-ticket'
+        )->with($this->data);
     }
 }

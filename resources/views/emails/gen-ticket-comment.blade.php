@@ -13,7 +13,7 @@
 {{ $ticketUrlText }}
 @endcomponent
 
-Take care,<br>
+Thanks,<br>
 ---<br><br>
 {{ config('app.name') }} team
 @endcomponent

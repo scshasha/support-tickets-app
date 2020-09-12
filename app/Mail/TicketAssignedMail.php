@@ -11,14 +11,20 @@ class TicketAssignedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected $data = [];
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($data, $ticket)
     {
-        //
+        $this->subject($data['email_subject']);
+        $this->template = $data['email_template'];
+        $this->data = [
+            'uri' => sprintf('%s/tickets/%s', env('APP_URL'), $ticket->ticket_id),
+        ];
     }
 
     /**
@@ -28,6 +34,6 @@ class TicketAssignedMail extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->markdown('emails.agent-assigned-ticket')->with($this->data);
     }
 }
